@@ -12,22 +12,39 @@ const { savePost, getSavedPosts } = require('./services/postService');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(helmet());
-app.use(compression());
+// CORS configuration - must be applied before other middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
+  origin: process.env.NODE_ENV === 'production'
     ? ['https://ai-postsmith.vercel.app', 'https://postsmith-ai.vercel.app']
     : ['http://localhost:3000'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Handle preflight requests explicitly
+app.options('*', cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://ai-postsmith.vercel.app', 'https://postsmith-ai.vercel.app']
+    : ['http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middleware
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 
-// Rate limiting
+// Rate limiting - exclude OPTIONS requests
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  message: 'Too many requests from this IP, please try again later.',
+  skip: (req) => req.method === 'OPTIONS' // Skip rate limiting for OPTIONS requests
 });
 app.use('/api/', limiter);
 
