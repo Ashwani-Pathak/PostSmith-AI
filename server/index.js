@@ -13,24 +13,35 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS configuration - must be applied before other middleware
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://ai-postsmith.vercel.app', 'https://postsmith-ai.vercel.app']
-    : ['http://localhost:3000'],
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      'https://ai-postsmith.vercel.app',
+      'https://postsmith-ai.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly
-app.options('*', cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? ['https://ai-postsmith.vercel.app', 'https://postsmith-ai.vercel.app']
-    : ['http://localhost:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.options('*', cors(corsOptions));
 
 // Middleware
 app.use(helmet({
