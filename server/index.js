@@ -17,7 +17,7 @@ app.use(helmet());
 app.use(compression());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://ai-postsmith.vercel.app', 'https://ai-postsmith.vercel.app']
+    ? ['https://ai-postsmith.vercel.app', 'https://postsmith-ai.vercel.app']
     : ['http://localhost:3000'],
   credentials: true
 }));
