@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://postsmith-ai.onrender.com/';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://postsmith-ai.onrender.com';
 
 // Helper function for API calls
 const apiCall = async (endpoint, options = {}) => {
@@ -25,7 +25,7 @@ const apiCall = async (endpoint, options = {}) => {
 
 // Generate LinkedIn posts
 export const generateLinkedInPosts = async (formData) => {
-  return apiCall('/generate', {
+  return apiCall('/api/generate', {
     method: 'POST',
     body: JSON.stringify(formData),
   });
@@ -33,7 +33,7 @@ export const generateLinkedInPosts = async (formData) => {
 
 // Save a post
 export const savePost = async (postData) => {
-  return apiCall('/save', {
+  return apiCall('/api/save', {
     method: 'POST',
     body: JSON.stringify(postData),
   });
@@ -41,28 +41,28 @@ export const savePost = async (postData) => {
 
 // Get saved posts
 export const getSavedPosts = async () => {
-  return apiCall('/myposts', {
+  return apiCall('/api/myposts', {
     method: 'GET',
   });
 };
 
 // Health check
 export const checkHealth = async () => {
-  return apiCall('/health', {
+  return apiCall('/api/health', {
     method: 'GET',
   });
 };
 
 // Delete a saved post
 export const deletePost = async (postId) => {
-  return apiCall(`/posts/${postId}`, {
+  return apiCall(`/api/posts/${postId}`, {
     method: 'DELETE',
   });
 };
 
 // Update a saved post
 export const updatePost = async (postId, updateData) => {
-  return apiCall(`/posts/${postId}`, {
+  return apiCall(`/api/posts/${postId}`, {
     method: 'PUT',
     body: JSON.stringify(updateData),
   });
