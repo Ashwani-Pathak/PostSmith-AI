@@ -1,0 +1,69 @@
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+// Helper function for API calls
+const apiCall = async (endpoint, options = {}) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`API call to ${endpoint} failed:`, error);
+    throw error;
+  }
+};
+
+// Generate LinkedIn posts
+export const generateLinkedInPosts = async (formData) => {
+  return apiCall('/generate', {
+    method: 'POST',
+    body: JSON.stringify(formData),
+  });
+};
+
+// Save a post
+export const savePost = async (postData) => {
+  return apiCall('/save', {
+    method: 'POST',
+    body: JSON.stringify(postData),
+  });
+};
+
+// Get saved posts
+export const getSavedPosts = async () => {
+  return apiCall('/myposts', {
+    method: 'GET',
+  });
+};
+
+// Health check
+export const checkHealth = async () => {
+  return apiCall('/health', {
+    method: 'GET',
+  });
+};
+
+// Delete a saved post
+export const deletePost = async (postId) => {
+  return apiCall(`/posts/${postId}`, {
+    method: 'DELETE',
+  });
+};
+
+// Update a saved post
+export const updatePost = async (postId, updateData) => {
+  return apiCall(`/posts/${postId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updateData),
+  });
+};
