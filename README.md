@@ -3,6 +3,7 @@
 # By Ashwani Pathak | 3rd Year UG at IIT Kharagpur | Dept Of Metallurgical and Materials Engineering | ImBesideYou Submission
 
 **PostSmith AI** is an intelligent agent-based web application that automates the repetitive task of creating professional LinkedIn posts. By leveraging advanced AI planning and execution, it streamlines content generation for busy professionals and students.
+Youtube Demo- https://youtu.be/u91g5AeKE54?si=HcmZtRJXnyGjKEAt
 
 ---
 
